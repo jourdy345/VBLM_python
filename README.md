@@ -1,6 +1,6 @@
 # Variational Inference in Python
 This repository contains the code for Variational Inference.
-The explanation of the fundamentals of Variational Inference is here[http://qr.ae/R4XFgB].
+The explanation of the fundamentals of Variational Inference is [here](http://qr.ae/R4XFgB).
 I guess that's all there is to say. Please let me know if there is anything wrong or something I can improve on.
 
 # DISCLAIMER
