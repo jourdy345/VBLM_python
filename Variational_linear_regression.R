@@ -14,7 +14,7 @@ variational_inference <- function(y, X, a0, b0, a0_alpha, b0_alpha, max_iter) {
   # values that don't change
   a_N <- a0 + N/2 
   a_N_alpha <- a0_alpha + D/2
-  lower_old <- -10000
+  lower_old <- -Inf
   step <- 0
   for (j in 1:max_iter) {
     V_N_inv <- diag(as.numeric(a_N_alpha/b_N_alpha), D) + t(X)%*%X
@@ -32,13 +32,13 @@ variational_inference <- function(y, X, a0, b0, a0_alpha, b0_alpha, max_iter) {
     else lower_old <- lower_new
   }
 
-  return(list("V_N_inv" = V_N_inv, 'w_N' = w_N, 'a_N' = a_N, 'b_N' = b_N, 'a_N_alpha' = a_N_alpha, 'b_N_alpha' = b_N_alpha, 'step' = step))
+  return(list("V_N_inv" = V_N_inv, 'w_N' = w_N, 'a_N' = a_N, 'b_N' = b_N, 'a_N_alpha' = a_N_alpha, 'b_N_alpha' = b_N_alpha, 'step' = step, 'lower bound' = lower_new))
 }
 
 
 data(iris)
-load(iris)
+head(iris, 2)
 
-X <- as.matrix(iris[2:4])
-y <- as.matrix(iris[1])
-variational_inference(y, X, 2, 2, 2, 2, 40)
+X <- as.matrix(unname(iris[2:4]))
+y <- as.matrix(unname(iris[1]))
+variational_inference(y, X, a0 = 2, b0 = 2, a0_alpha = 2, b0_alpha = 2, max_iter = 40)
