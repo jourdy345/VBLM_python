@@ -28,7 +28,7 @@ variational_inference <- function(y, X, a0, b0, a0_alpha, b0_alpha, max_iter) {
     }
     step <- step + 1
     lower_new <- lower_bound(N, D, a_N, b_N, y, X, w_N, temp, V_N_inv, a0, b0, a0_alpha, b0_alpha, a_N_alpha, b_N_alpha)
-    if (abs(lower_new - lower_old) < 0.0001) break
+    if (abs(lower_new - lower_old) < .Machine$double.eps) break
     else lower_old <- lower_new
   }
 
