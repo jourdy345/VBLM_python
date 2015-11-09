@@ -2,15 +2,21 @@
 ## A simple way to modify the training set is to switch 0 and 1 with (2y-1).
 
 
-variational_inference <- function(y, X, a0, b0, max_iter) {
-  
+variational_inference <- function(y = NULL, X = NULL, a0 = NULL, b0 = NULL, max_iter = NULL) {
+  if (is.null(y) || is.null(X)) stop("You should supply the function with both y and X.")
+  if (!is.matrix(X)) stop("The design matrix should be matrix typed.")
+  if (!is.vector(y)) stop("Training set has to be a vector.")이
+  if (is.null(a0)) a0 <- 100
+  if (is.null(b0)) b0 <- 100
+  if (is.null(max_iter)) max_iter <- 50
+
   # functions required for lower bound
-  sigmoid <- function(x) 1/(1+exp(-x))
-  lambda_xi <- function(x) 1/(2*x) * ( sigmoid(x) - 1/2)
+  sigmoid <- function(x) 1 / (1 + exp(-x))
+  lambda_xi <- function(x) 1 / (2 * x) * (sigmoid(x) - 1 / 2)
 
   # lower bound function
   lower_bound <- function(w_N, V_N_inv, xi, a0, b0, a_N, b_N) {
-    return(1/2*t(w_N)%*%V_N_inv%*%w_N + 1/2*log(det(solve(V_N_inv))) + sum(log(sigmoid(xi)) - xi/2 + lambda_xi(xi)*xi) - lgamma(a0) + a0*log(b0) - b0*a_N/b_N - a_N*log(b_N) + lgamma(a_N) + a_N)
+    return(1 / 2 * t(w_N) %*% V_N_inv %*% w_N + 1 / 2 * log(det(solve(V_N_inv))) + sum(log(sigmoid(xi)) - xi / 2 + lambda_xi(xi) * xi) - lgamma(a0) + a0 * log(b0) - b0 * a_N / b_N - a_N * log(b_N) + lgamma(a_N) + a_N)
   }
   
   # Setting the necessary initial values
@@ -27,24 +33,24 @@ variational_inference <- function(y, X, a0, b0, max_iter) {
     # Updating V_N
     temp_V <- matrix(0, nrow = D, ncol = D)
     for (i in 1:N) {
-      temp_V <- temp_V + xi[i]*X[i,]%*%t(X[i,])
+      temp_V <- temp_V + xi[i] * X[i,] %*% t(X[i,])
     }
-    V_N_inv <- diag(as.numeric(a_N/b_N), D) + 2*temp_V
+    V_N_inv <- diag(as.numeric(a_N / b_N), D) + 2 * temp_V
     
     # Updating w_N
     temp_w <- rep(0, D)
     for (i in 1:N) {
       temp_w <- temp_w + y[i]/2 * X[i,]
     }
-    w_N <- solve(V_N_inv)%*%temp_w
+    w_N <- solve(V_N_inv) %*% temp_w
     
     # Updating b_N
-    b_N <- b0 + 1/2*( t(w_N)%*%w_N + sum(diag(solve(V_N_inv))) )
+    b_N <- b0 + 1 / 2 * ( t(w_N) %*% w_N + sum(diag(solve(V_N_inv))) )
 
     # Updating xi
     xi_new <- rep(0, N)
     for (k in 1:N) {
-      xi_new[k] <- t(X[k,])%*%(solve(V_N_inv) + w_N%*%t(w_N))%*%X[k,]
+      xi_new[k] <- t(X[k,]) %*% (solve(V_N_inv) + w_N %*% t(w_N)) %*% X[k,]
     }
 
     # Computing the lower bound
@@ -63,7 +69,7 @@ variational_inference <- function(y, X, a0, b0, max_iter) {
 
 my_data <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
 my_data <- as.matrix(my_data)
-y <- 2*(unname(my_data[, 1])) - 1
+y <- 2 * (unname(my_data[, 1])) - 1
 X <- unname(my_data[, 2:4])
 
 variational_inference(y, X, 2, 2, 40)
