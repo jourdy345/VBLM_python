@@ -1,14 +1,13 @@
-library(mvtnorm)
-
-lower_bound <- function(N, D, a_N, b_N, y, X, w_N, temp, V_N_inv, a0, b0, a0_alpha, b0_alpha, a_N_alpha, b_N_alpha) {
-  return(-N/2*log(2*pi) - 1/2*(a_N/b_N*t(y - X%*%w_N)%*%(y - X%*%w_N) + N*temp) + 1/2*log(det(solve(V_N_inv))) + D/2 - lgamma(a0) + a0*log(b0) - b0*a_N/b_N + lgamma(a_N) - a_N*log(b_N) + a_N - lgamma(a0_alpha) + a0_alpha*log(b0_alpha) + lgamma(a_N_alpha) - a_N_alpha*log(b_N_alpha))
-}
-
 variational_inference <- function(y, X, a0, b0, a0_alpha, b0_alpha, max_iter) {
+  
+  # lower bound function
+  lower_bound <- function(N, D, a_N, b_N, y, X, w_N, temp, V_N_inv, a0, b0, a0_alpha, b0_alpha, a_N_alpha, b_N_alpha) {
+    return(-N/2*log(2*pi) - 1/2*(a_N/b_N*t(y - X%*%w_N)%*%(y - X%*%w_N) + N*temp) + 1/2*log(det(solve(V_N_inv))) + D/2 - lgamma(a0) + a0*log(b0) - b0*a_N/b_N + lgamma(a_N) - a_N*log(b_N) + a_N - lgamma(a0_alpha) + a0_alpha*log(b0_alpha) + lgamma(a_N_alpha) - a_N_alpha*log(b_N_alpha))
+  }
+  
   # initial values
   N <- as.numeric(dim(X)[1]) # number of observations
   D <- as.numeric(dim(X)[2]) # number of features
-  w_N <- rmvnorm(N, mean = rep(0, N), sigma = diag(1/a0_alpha, N), method = 'chol') # initial weights
   b_N_alpha <- b0_alpha # initial prior
   
   # values that don't change

@@ -1,13 +1,18 @@
 ## In this logistic regression, the training set has to be either 1 or -1. Note that it is not 0 or 1.
 ## A simple way to modify the training set is to switch 0 and 1 with (2y-1).
 
-sigmoid <- function(x) 1/(1+exp(-x))
-lambda_xi <- function(x) 1/(2*x) * ( sigmoid(x) - 1/2)
-lower_bound <- function(w_N, V_N_inv, xi, a0, b0, a_N, b_N) {
-  return(1/2*t(w_N)%*%V_N_inv%*%w_N + 1/2*log(det(solve(V_N_inv))) + sum(log(sigmoid(xi)) - xi/2 + lambda_xi(xi)*xi) - lgamma(a0) + a0*log(b0) - b0*a_N/b_N - a_N*log(b_N) + lgamma(a_N) + a_N)
-}
 
 variational_inference <- function(y, X, a0, b0, max_iter) {
+  
+  # functions required for lower bound
+  sigmoid <- function(x) 1/(1+exp(-x))
+  lambda_xi <- function(x) 1/(2*x) * ( sigmoid(x) - 1/2)
+
+  # lower bound function
+  lower_bound <- function(w_N, V_N_inv, xi, a0, b0, a_N, b_N) {
+    return(1/2*t(w_N)%*%V_N_inv%*%w_N + 1/2*log(det(solve(V_N_inv))) + sum(log(sigmoid(xi)) - xi/2 + lambda_xi(xi)*xi) - lgamma(a0) + a0*log(b0) - b0*a_N/b_N - a_N*log(b_N) + lgamma(a_N) + a_N)
+  }
+  
   # Setting the necessary initial values
   N <- as.numeric(dim(X)[1])
   D <- as.numeric(dim(X)[2])
