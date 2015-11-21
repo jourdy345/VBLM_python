@@ -1,3 +1,4 @@
+## Gibbs sampler for Bayesian linear regression model
 library(mvtnorm)
 linear_MCMC <- function(y = NULL, X = NULL, a0_lambda = NULL, b0_lambda = NULL, a0_alpha = NULL, b0_alpha = NULL, max_iter = NULL) {
   if (is.null(y) || is.null(X)) stop("The model requires both y and X.")
