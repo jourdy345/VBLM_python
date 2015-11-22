@@ -61,9 +61,9 @@ logistic_MCMC <- function(y, X, burnin, sample_size) {
     an <- function(x, n, t = 2/pi) {
       if (t <= 0) stop('t should be greater than 0')
       if (x > t) {
-        return(pi*(n + 1/2)* exp(-(n + 1/2)^2 * pi^2 * x / 2))
+        return(pi * (n+0.5) * exp( -(n+0.5)^2*pi^2*x/2 ))
       } else {
-        return(pi*(n + 1/2)*(2/(pi*x))^(3/2) * exp(-(2*(n + 1/2)/x)))
+        return((2/pi/x)^1.5 * pi * (n+0.5) * exp( -2*(n+0.5)^2/x))
       }
     }
 
@@ -112,18 +112,17 @@ logistic_MCMC <- function(y, X, burnin, sample_size) {
 
   # MCMC
   y <- as.numeric(y) 
-  X <- as.numeric(X)
   X <- as.matrix(X)
 
-  w <- c()
   n <- nrow(X)
   p <- ncol(X)
   m <- rep(0.1, p)
   Sig <- diag(length(m), p)
-  beta <- rmvnorm(n = p, mean = m, sigma = Sig)
+  beta <- rmvnorm(n = 1, mean = m, sigma = Sig)
   beta_list <- matrix(0, ncol = p)
 
   for (j in 1:sample_size) {
+    w <- c()
     for (i in 1:n) {
       b <- abs(sum(X[i, ] * beta)) # dot product
       w[i] <- polya_gamma_generate(b)$x
@@ -131,7 +130,7 @@ logistic_MCMC <- function(y, X, burnin, sample_size) {
     Sigma <- solve(t(X)%*%diag(w)%*%X + solve(Sig))
     Mean <- Sigma%*%(t(X)%*%(y - 0.5*rep(1, n)) + solve(Sig)%*%m)
     beta <- rmvnorm(n = p, mean = Mean, sigma = Sigma)
-    if (j > burnin & j && 5 == 0) {
+    if (j > burnin & j %% 5 == 0) {
       beta_list <- rbind(beta_list, beta)
     }
   }

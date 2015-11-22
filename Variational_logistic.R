@@ -5,7 +5,7 @@
 variational_inference <- function(y = NULL, X = NULL, a0 = NULL, b0 = NULL, max_iter = NULL) {
   if (is.null(y) || is.null(X)) stop("You should supply the function with both y and X.")
   if (!is.matrix(X)) stop("The design matrix should be matrix typed.")
-  if (!is.vector(y)) stop("Training set has to be a vector.")이
+  if (!is.vector(y)) stop("Training set has to be a vector.")
   if (is.null(a0)) a0 <- 100
   if (is.null(b0)) b0 <- 100
   if (is.null(max_iter)) max_iter <- 50
