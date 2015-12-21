@@ -42,3 +42,10 @@ y <- unname(my_data[, 1])
 X <- unname(my_data[, 2:4])
 
 variational_inference(y, X)
+
+# ## MCMC logistic
+# Sig_beta <- diag(p, p)
+# mu_beta <- drop(rmvnorm(n = 1, mean = rep(0.1, p), sigma = Sig_beta))
+# library(BayesLogit)
+# result  <- logit(y, X, n = rep(1, n), m0 = mu_beta, P0 = solve(Sig_beta), samp = 10000, burn = 5000)
+# apply(result$beta, 2, mean)

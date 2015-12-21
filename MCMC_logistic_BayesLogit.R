@@ -1,3 +1,5 @@
+# 이게 잘 안 돌아갑니다 ㅠ
+
 library(mvtnorm)
 logistic_MCMC <- function(y, X, burnin, sample_size) {
   TRUNC = 0.64
